@@ -1,27 +1,57 @@
 "use client";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import MiniCard from "@/components/mini_detail_card/mini_detail_card";
 import CustomList from "@/components/customList/customList";
 import { usePathname, useRouter } from "next/navigation";
-import { data } from "../../../../public/data";
 import InfoBit from "@/components/infoBit/infoBit";
 import { IoLocationOutline } from "react-icons/io5";
-import { CiCirclePlus } from "react-icons/ci";
 import { AiOutlineFire } from "react-icons/ai";
 import { MdDateRange } from "react-icons/md";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import { LiaPlusCircleSolid } from "react-icons/lia";
 import Button from "@/components/button/button";
-const Detail = () => {
+import axios from "axios";
+import { VolunteeringOpportunity } from "../../../lib/def";
+import { Stack } from "@mui/material";
+
+const lister = (li: string[]) => {
+  const newList = [];
+  for (let i = 0; i < li.length; i++) {
+    const nl = li[i].split("and");
+    newList.push(...nl);
+  }
+  return newList;
+};
+
+interface Props {
+  data: VolunteeringOpportunity;
+}
+
+const Detail = ({ data }: Props) => {
+  const [singleData, setSingleData] = useState(data);
+
   const pathname = usePathname();
   const urlParts = pathname.split("/");
   const dynamicId = urlParts[urlParts.length - 2];
 
-  const singleData = data?.filter((d) => d.id === Number(dynamicId))?.[0];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://akil-backend.onrender.com/opportunities/${dynamicId}`
+        );
+        const fetchedData = await response.data;
+        setSingleData(fetchedData.data);
+      } catch (error) {
+        console.log(dynamicId);
+      }
+    };
+    fetchData();
+  }, [dynamicId]);
 
   if (!singleData) {
-    return <div>Data not found for ID: {dynamicId}</div>;
+    return <div>Loading</div>;
   }
 
   return (
@@ -55,10 +85,7 @@ const Detail = () => {
               <h2 className="mb-2 text-lg font-extrabold ">
                 Ideal Candidates we want
               </h2>
-              <CustomList
-                listItems={singleData.additionalQualities}
-                bulletIcon="•"
-              />
+              <CustomList listItems={singleData.requirements} bulletIcon="•" />
             </div>
           </div>
           <div className="mt-4">
@@ -71,7 +98,7 @@ const Detail = () => {
                     style={{ color: "#93D2FF", fontSize: "20px" }}
                   />
                 }
-                additionaInfo={singleData.jobInfo.posted_on}
+                additionalInfo={singleData.datePosted}
                 isDate={true}
               />
               <InfoBit
@@ -81,7 +108,7 @@ const Detail = () => {
                     style={{ color: "#93D2FF", fontSize: "20px" }}
                   />
                 }
-                additionaInfo={singleData.jobInfo.deadline}
+                additionalInfo={singleData.deadline}
                 isDate={true}
               />
               <InfoBit
@@ -91,7 +118,7 @@ const Detail = () => {
                     style={{ color: "#93D2FF", fontSize: "20px" }}
                   />
                 }
-                additionaInfo={singleData.jobInfo.location}
+                additionalInfo={singleData.location[0]}
                 isDate={false}
               />
               <InfoBit
@@ -99,7 +126,7 @@ const Detail = () => {
                 icon={
                   <MdDateRange style={{ color: "#93D2FF", fontSize: "20px" }} />
                 }
-                additionaInfo={singleData.jobInfo.startDate}
+                additionalInfo={singleData.startDate}
                 isDate={true}
               />
               <InfoBit
@@ -109,23 +136,23 @@ const Detail = () => {
                     style={{ color: "#93D2FF", fontSize: "20px" }}
                   />
                 }
-                additionaInfo={singleData.jobInfo.endDate}
+                additionalInfo={singleData.endDate}
                 isDate={true}
               />
             </div>
             <div className="w-full h-[1px] bg-gray-300  mt-4"></div>
             <div>
               <h2 className="mt-4 text-lg font-extrabold mb-2">Categories</h2>
-              <div className="flex gap-2">
-                {singleData.categories.map((d) => (
+              <Stack spacing={1} direction="row" useFlexGap flexWrap="wrap">
+                {lister(singleData.categories).map((d, idx) => (
                   <Button
-                    key={d.name}
-                    name={d.name}
-                    color={d.color}
+                    key={d}
+                    name={d}
+                    color={idx % 2 == 0 ? "#FFB836" : "#4640DE"}
                     small={true}
                   />
                 ))}
-              </div>
+              </Stack>
             </div>
             <div className="w-full h-[1px] bg-gray-300  mt-4"></div>
             <div>
@@ -133,7 +160,7 @@ const Detail = () => {
                 Required Skills
               </h2>
               <div className="flex flex-wrap gap-2">
-                {singleData.required_skills.map((skill) => (
+                {singleData.requiredSkills.map((skill) => (
                   <Button
                     key={skill}
                     color="#8785BF"

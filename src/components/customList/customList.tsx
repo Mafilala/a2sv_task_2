@@ -1,7 +1,15 @@
 import React from "react";
 import clsx from "clsx";
 
-const ListItem = ({ title, body, bulletIcon }) => {
+const ListItem = ({
+  title,
+  body,
+  bulletIcon,
+}: {
+  title: string;
+  body: string;
+  bulletIcon: any;
+}) => {
   return (
     <li className="flex mb-2">
       <p className="inline">
@@ -13,14 +21,26 @@ const ListItem = ({ title, body, bulletIcon }) => {
   );
 };
 
-const CustomList = ({ listItems, bulletIcon }) => {
+const CustomList = ({
+  listItems,
+  bulletIcon,
+}: {
+  listItems: string;
+  bulletIcon: any;
+}) => {
+  let newListItems: string[];
+  if (listItems) {
+    newListItems = listItems.split("\n");
+  } else {
+    newListItems = [];
+  }
   return (
     <ul className="list-disc pl-4">
-      {listItems.map((listItem) => (
+      {newListItems.map((listItem) => (
         <ListItem
-          key={listItem.title || Math.random()}
-          title={listItem.title}
-          body={listItem.body}
+          key={listItem || Math.random()}
+          title=""
+          body={listItem}
           bulletIcon={bulletIcon}
         />
       ))}

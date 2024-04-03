@@ -1,25 +1,16 @@
 "use client";
 import { GoShareAndroid } from "react-icons/go";
 import Image from "next/image";
-
-export default function MiniCard({
-  data: {
-    name,
-    title,
-    location: { country, city },
-    work_location,
-    imgUrl,
-  },
-}) {
+import { VolunteeringOpportunity } from "../../lib/def";
+export default function MiniCard({ data }: { data: VolunteeringOpportunity }) {
   return (
     <div className="flex justify-between border w-full p-2 rounded-2xl mb-8">
       <div className="flex gap-4 ">
-        <Image src={imgUrl} width="50" height="50" alt="company's logo" />
+        <img src={data.logoUrl} width="50" height="50" alt="company's logo" />
         <div>
-          <h1 className="text-xl font-bold">{title}</h1>
+          <h1 className="text-xl font-bold">{data.orgName}</h1>
           <p className="text-gray-600 text-xs">
-            {`
-            ${name} · ${city}, ${country} · ${work_location}`}
+            {`${data.whenAndWhere} · ${data.opType}`}
           </p>
         </div>
       </div>

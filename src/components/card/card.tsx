@@ -7,8 +7,17 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
+import { VolunteeringOpportunity } from "../../lib/def";
 
-const JobCard = ({ cardInfo }) => {
+const JobCard = ({ cardInfo }: { cardInfo: VolunteeringOpportunity }) => {
+  const lister = (li: string[]) => {
+    const newList = [];
+    for (let i = 0; i < li.length; i++) {
+      const nl = li[i].split("and");
+      newList.push(...nl);
+    }
+    return newList;
+  };
   const router = useRouter();
   const pathname = usePathname();
   const nextPath =
@@ -27,7 +36,7 @@ const JobCard = ({ cardInfo }) => {
         }}
       >
         <div className="w-[100px] flex justify-center items-start pt-4">
-          <Image alt="logo" width="50" height="50" src={cardInfo.imgUrl} />
+          <img alt="logo" width="50" height="50" src={cardInfo.logoUrl} />
         </div>
         <div>
           <CardContent>
@@ -45,7 +54,7 @@ const JobCard = ({ cardInfo }) => {
               component="div"
               sx={{ color: "gray", fontWeight: "200", fontSize: "12px" }}
             >
-              {`${cardInfo.name} · ${cardInfo.location.city}, ${cardInfo.location.country}`}
+              {`${cardInfo.orgName} · ${cardInfo.location[0]} Ethiopia`}
             </Typography>
             <Typography
               variant="body2"
@@ -67,24 +76,25 @@ const JobCard = ({ cardInfo }) => {
                   fontWeight: "600",
                 }}
               >
-                {cardInfo.work_location}
+                {cardInfo.opType}
               </Button>
             </CardActions>
             <div className="w-[2px] bg-gray-300 h-[30px]"></div>
             <CardActions>
-              {cardInfo.categories.map((obj) => (
+              {lister(cardInfo.categories).map((category, idx) => (
                 <Button
-                  key={obj.name}
+                  key={category}
                   variant="outlined"
                   size="small"
                   sx={{
                     borderRadius: "20px",
-                    borderColor: obj.color,
-                    color: obj.color,
+                    borderColor: idx % 2 == 0 ? "#FFB836" : "#4640DE",
+                    color: idx % 2 == 0 ? "#FFB836" : "#4640DE",
                     textTransform: "none",
+                    fontSize: "8px",
                   }}
                 >
-                  {obj.name}
+                  {category}
                 </Button>
               ))}
             </CardActions>

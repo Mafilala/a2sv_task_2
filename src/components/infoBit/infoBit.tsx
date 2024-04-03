@@ -1,7 +1,17 @@
 import React from "react";
 
-const InfoBit = ({ name, icon, additionaInfo, isDate }) => {
-  function format(inp) {
+const InfoBit = ({
+  name,
+  icon,
+  additionalInfo,
+  isDate,
+}: {
+  name: string;
+  icon: any;
+  additionalInfo: string;
+  isDate: boolean;
+}) => {
+  function format(inp: string) {
     if (!isDate) {
       return inp;
     }
@@ -19,7 +29,7 @@ const InfoBit = ({ name, icon, additionaInfo, isDate }) => {
         <div>
           <h4 className="text-gray-500 text-sm">{name}</h4>
           <p className="text-gray-700 font-bold text-sm">
-            {format(additionaInfo)}
+            {format(additionalInfo)}
           </p>
         </div>
       </div>
